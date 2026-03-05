@@ -1,0 +1,1 @@
+export { useMiniProgram } from './useMiniProgram.js';

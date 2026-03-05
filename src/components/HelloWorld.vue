@@ -1,20 +1,46 @@
 <script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: true,
-  },
-})
+import { onMounted, ref } from "vue";
+import { useMiniProgram } from "@/composables";
+import { MESSAGE, GET_AUTH_CODE } from "@/constants";
+
+const { postMessage, onMessage } = useMiniProgram();
+
+const message = ref("");
+
+onMounted(() => {
+  onMessageHandler();
+});
+
+const onMessageHandler = () => {
+  onMessage((data) => {
+    message.value = `${JSON.stringify(data)}`;
+  });
+};
+
+const sendMessage = () => {
+  postMessage(MESSAGE, {
+    message: "Hello from WEB",
+    timestamp: Date.now(),
+  });
+};
+
+const auth = () => {
+  postMessage(GET_AUTH_CODE, {});
+};
+
+const addressBook = () => {
+  postMessage(ADDRESS_BOOK, {});
+};
 </script>
 
 <template>
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
-    <h3>
-      You’ve successfully created a project with
-      <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
-      <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
-    </h3>
+    <button class="btn-primary" @click="sendMessage">MESSAGE</button>
+    <button class="btn-primary" @click="auth">AUTH</button>
+    <button class="btn-primary" @click="addressBook">ADDRESS BOOK</button>
+    <h3>RESULT:</h3>
+    <p>{{ message }}</p>
   </div>
 </template>
 
@@ -40,5 +66,22 @@ h3 {
   .greetings h3 {
     text-align: left;
   }
+}
+
+button {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--color-border-radius);
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0.5rem 0.5rem 0.5rem 0;
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
 }
 </style>
